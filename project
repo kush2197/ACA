@@ -1,1 +1,86 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+ 
+typedef struct point{
+		double x;
+		double y;
+	}point;
+ 
+int max_n=100;
+double dist(point*,point*);
+point circumcentre(point*,point*,point*);
+int solution(point[max_n],int,point,double);
+int main(void) {
+	int n,i,j,k;
+	double radius;
+	point centre;
+	printf("ENTER NUMBER OF POINTS:\n");
+	scanf("%d\n",&n);
+	point pt[max_n];
+	printf("ENTER %d COORDINATES:\n",n);
+	for(i=0;i<n;i++)
+	{
+		scanf("(%lf,%lf)\n",&pt[i].x,&pt[i].y);
+	}
+	for(i=0;i<n;i++)
+	{
+		for(j=i+1;j<n;j++)
+		{
+		    centre.x=(pt[i].x+pt[j].x)/2;
+			centre.y=(pt[i].y+pt[j].y)/2;
+			radius=dist(&pt[i],&pt[j])/2;
+			if(solution(pt,n,centre,radius))
+			{
+				printf("CENTRE: (%lf,%lf)\nRADIUS: %lf",centre.x,centre.y,radius);
+				return 0;
+			}
+		}
+	}
+	printf("reached40");
+	double a,b,c;
+	for(i=0;i<n;i++)
+	{
+		for(j=i+1;j<n;j++)
+		{
+			for(k=j+1;k<n;k++)
+			{
+				centre=circumcentre(&pt[i],&pt[j],&pt[k]);
+				a=dist(&pt[i],&pt[j]);
+				b=dist(&pt[i],&pt[k]);
+				c=dist(&pt[j],&pt[k]);
+				radius=a*b*c/((a+b+c)*(a+b-c)*(a+c-b)*(b+c-a));
+				if(solution(pt,n,centre,radius))
+				{
+					printf("CENTRE: (%lf,%lf)\nRADIUS: %lf",centre.x,centre.y,radius);
+					return 0;
+				}
+			}
+		}
+	}
+	return 0;
+}
+ 
+double dist(point* A,point* B)
+{
+	return(sqrt(pow((A->x-B->x),2)+pow((A->y-B->y),2)));
+}
+ 
+point circumcentre(point* A,point* B,point* C)
+{
+	point cen;
+	cen.x=((B->y-A->y)*(pow((C->x),2)-pow((B->x),2)+pow((C->y),2)-pow((B->y),2))-(C->y-B->y)*(pow((B->x),2)-pow((A->x),2)+pow((B->y),2)-pow((A->y),2)))/(2*((C->x-B->x)*(B->y-A->y)-(B->x-A->x)*(C->y-B->y)));
+	cen.y=((B->x-A->x)*(pow((C->x),2)-pow((B->x),2)+pow((C->y),2)-pow((B->y),2))-(C->x-B->x)*(pow((B->x),2)-pow((A->x),2)+pow((B->y),2)-pow((A->y),2)))/(2*((B->x-A->x)*(C->y-B->y)-(C->x-B->x)*(B->y-A->y)));
+	return cen;
+}
+ 
+int solution(point pt[max_n],int n,point c,double r)
+{
+	int i;
+	for(i=0;i<n;i++)
+	{
+		if(((int)((dist(&pt[i],&c))*100000))>(int)(r*100000))
+		return 0;
+	}
+	return 1;
+}
